@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="transparent">#50000000</color>
+    <color name="fifty_trans">#80000000</color>
+    <color name="full_trans">#00000000</color>
+
+    <!--腾讯color-->
+    <color name="colorTransparentGray">#88ffffff</color>
+    <color name="color_input_dialog_background">#b4ffffff</color>
+
+    <color name="colorTransparentBlack">#44777777</color>
+
+    <color name="colorDanmuMsg">#30e7d5</color>
+
+    <color name="background_gray1">#EBEBEB</color>
+    <color name="black">#000000</color>
+    <!--蒙版-->
+    <color name="colorMask">#66000000</color>
+    <color name="dialog_btn_pressed_color">#efefef</color>
+    <!--app主色调，背景色-->
+    <!--<color name="colorPrimary">#FFFFFF</color>-->
+    <!--背景色-->
+    <color name="colorBackground">#F5F5F5</color>
+    <!--app主题色，应用于导航，按钮-->
+    <color name="colorTheme">#80407A</color>
+    <!--主题色激活态，如按钮高亮-->
+    <color name="colorThemeActive">#A15C9A</color>
+    <!--红色标签/提示-->
+    <color name="colorLabelRed">#FF447D</color>
+    <!--红色标签/提示高亮-->
+    <color name="colorLabelRedActive">#FF89AB</color>
+    <!--黄色色标签/提示-->
+    <color name="colorLabelYellow">#FFAE20</color>
+    <!--黄色色标签/提示高亮-->
+    <color name="colorLabelYellowActive">#FFCD35</color>
+    <!--黄色蒙版-->
+    <color name="colorLabelYellowMask">#4DFFAE20</color>
+    <!--红色-->
+    <color name="colorRed">#FF3333</color>
+    <!--文字白色-->
+    <color name="colorTextWhite">#FFFFFF</color>
+    <!--文字G1-->
+    <color name="colorTextG1">#CCCCCC</color>
+    <!--文字G2-->
+    <color name="colorTextG2">#999999</color>
+    <!--文字G3-->
+    <color name="colorTextG3">#666666</color>
+    <!--文字G4-->
+    <color name="colorTextG4">#333333</color>
+    <!--文字black-->
+    <color name="colorTextBlack">#000000</color>
+    <!--gray1-->
+    <color name="colorGray1">#F0F0F0</color>
+    <!--light gray-->
+    <color name="colorLightGray">#E6E6E6</color>
+    <!--gray2-->
+    <color name="colorGray2">#DCDCDC</color>
+    <!--gray3-->
+    <color name="colorGray3">#C8C8C8</color>
+    <!--gray4-->
+    <color name="colorGray4">#787878</color>
+    <!--gray5-->
+    <color name="colorGray5">#505050</color>
+    <!--gray6-->
+    <color name="colorGray6">#141414</color>
+
+
+    <!--直播规范颜色-->
+    <color name="W1">#ffffff</color>
+    <color name="TRANS_W1">#80ffffff</color>
+    <color name="TRANSP_W1">#50ffffff</color>
+
+
+    <color name="R1">#dd502f</color>
+
+    <color name="G1">#222222</color>
+    <color name="G2">#777777</color>
+    <color name="G3">#aaaaaa</color>
+    <color name="G4">#cccccc</color>
+    <color name="G5">#ebebeb</color>
+    <color name="G6">#f0f0f0</color>
+    <color name="G8">#f7f7f7</color>
+    <color name="G9">#DDDDDD</color>
+
+
+    <color name="B1">#4880d4</color>
+
+    <color name="Y1">#f7c641</color>
+
+    <color name="GREEN1">#4BE0D6</color>
+
+    <color name="TRANS_B1">#3E000000</color>
+</resources>

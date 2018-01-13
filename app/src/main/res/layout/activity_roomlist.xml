@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/loadingview"
+        layout="@layout/layout_loading" />
+
+    <TextView
+        android:id="@+id/createroom"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:text="创建房间"
+        android:textColor="@color/B1" />
+
+    <ListView
+        android:layout_below="@+id/createroom"
+        android:id="@+id/roomlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</RelativeLayout>
