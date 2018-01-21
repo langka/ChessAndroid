@@ -27,4 +27,8 @@
         android:text="开始游戏"
         android:textColor="@color/R1"
         android:textSize="20sp" />
+    <ListView
+        android:id="@+id/room_talk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.bupt.chess.msg.data.response;
 
-import scala.util.parsing.combinator.testing.Str;
 
 /**
  * Created by xusong on 2018/1/5.
@@ -14,5 +13,7 @@ public class RoomResponse {
     public boolean success;
     public String red;
     public String black;
+    public String master;
     public int type;
+    public String info;
 }

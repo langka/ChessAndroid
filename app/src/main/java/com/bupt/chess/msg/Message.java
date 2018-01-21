@@ -2,6 +2,7 @@ package com.bupt.chess.msg;
 
 import com.bupt.chess.msg.data.CloseMsg;
 import com.bupt.chess.msg.data.ConnRequest;
+import com.bupt.chess.msg.data.GameRequest;
 import com.bupt.chess.msg.data.LogInRequest;
 import com.bupt.chess.msg.data.LogOutRequest;
 import com.bupt.chess.msg.data.RegisterRequest;
@@ -198,7 +199,16 @@ public class Message<T> {
         return m;
     }
 
-
+    public static Message createGameStartRequest(String roomKey,String mkey){
+        Message m  =new Message<>();
+        m.key = mkey;
+        m.type = TYPE_GAME_REQUEST;
+        GameRequest request = new GameRequest();
+        request.type = 1;
+        request.room = roomKey;
+        m.data = request;
+        return m;
+    }
 
     @Override
     public String toString() {

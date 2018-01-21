@@ -6,9 +6,11 @@ import com.bupt.chess.conn.JsonConnection;
 import com.bupt.chess.msg.Message;
 import com.bupt.chess.msg.UserInfo;
 import com.bupt.chess.msg.data.response.AccountResponse;
+import com.bupt.chess.msg.data.response.RoomResponse;
 import com.bupt.chess.msg.data.response.StaticsResponse;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,8 +35,8 @@ public class MessageManager {
 
     private Handler handler;
     private volatile boolean end = false;
-    private AtomicInteger id = new AtomicInteger(0);
-    //需要回复的才有id，不需要response的id一律为负数
+    private AtomicInteger id = new AtomicInteger(600);
+    //请求响应模式的id一律在600以上，一次相应后直接remove，否则在600以下以type判断是否有监听，并且不主动remove监听
     public String uniqueKey;//conn message时返回的key
     private JsonConnection connection;
     private LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
@@ -47,9 +49,16 @@ public class MessageManager {
             try {
                 Message m = queue.take();
                 OnMessageResponse r = responsePool.get(m.id);
-                if (r != null)
+                if (r != null) {//请求响应模式
                     handler.post(() -> r.onResponse(m));
-                else {
+                    responsePool.remove(m.id);
+                }
+                else {//非请求响应模式，下次仍然可以用
+                    int type = m.type;
+                    OnMessageResponse response = responsePool.get(type);
+                    if(response!=null){
+                        handler.post(()->r.onResponse(m));
+                    }
 
                 }
             } catch (InterruptedException e) {
@@ -73,6 +82,25 @@ public class MessageManager {
         void onResponse(Message<T> response);
     }
 
+
+    public void registerSpecialCallBack(int[] types,OnMessageResponse response){
+        if(types!=null&&types.length!=0){
+            for(int i:types){
+                responsePool.put(i,response);
+            }
+        }
+    }
+    public void registerSpecialCallBack(Map<Integer,OnMessageResponse> callbacks){
+        responsePool.putAll(callbacks);
+    }
+
+    public void removeCallBacks(int[] types){
+        if(types!=null&&types.length>0){
+            for(int i:types){
+                responsePool.remove(i);
+            }
+        }
+    }
 
     public void sendLoginMessage(String name, String pwd, OnMessageResponse<AccountResponse> response) {
         sendingService.submit(() -> {
@@ -102,11 +130,50 @@ public class MessageManager {
 
     }
 
+    public void joinRoom(String roomKey, OnMessageResponse<RoomResponse> r){
+        sendingService.submit(()->{
+            int identity = id.incrementAndGet();
+            Message m = Message.createJoinRoomRequest(roomKey,uniqueKey);
+            responsePool.put(identity,r);
+            try {
+                connection.writeJson(m.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void leaveRoom(String roomKey){
+        sendingService.submit(()->{
+            Message m = Message.createLeaveRoomRequest(roomKey,uniqueKey);
+            try {
+                connection.writeJson(m.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void startGame(String roomKey){
+        sendingService.submit(()->{
+            Message m = Message.createGameStartRequest(roomKey,uniqueKey);
+            try {
+                connection.writeJson(m.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void init() {
         handler = new Handler();
         connection = JsonConnection.createConnection(null);
         receiverThread.submit(receiveWorker);
         callBackHandlerService.submit(messageHandler);
         callBackHandlerService.submit(messageHandler);
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
     }
 }

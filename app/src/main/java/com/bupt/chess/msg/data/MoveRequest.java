@@ -1,7 +1,5 @@
 package com.bupt.chess.msg.data;
 
-import scala.util.parsing.combinator.testing.Str;
-
 /**
  * Created by xusong on 2018/1/6.
  * Email:xusong@bupt.edu.cn

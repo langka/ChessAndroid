@@ -178,7 +178,7 @@ public class LoginActivity extends BaseActivity {
             if(!resp.data.success){
                 showText("登陆失败:"+resp.data.info);
             }else {
-                RoomListActivity.Start(LoginActivity.this);
+              // RoomListActivity.Start(LoginActivity.this);
             }
         });
 

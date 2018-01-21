@@ -1,6 +1,7 @@
 package com.bupt.chess.msg.data;
 
-import sse.xs.entity.UserInfo;
+
+import com.bupt.chess.msg.UserInfo;
 
 /**
  * Created by xusong on 2018/1/3.
