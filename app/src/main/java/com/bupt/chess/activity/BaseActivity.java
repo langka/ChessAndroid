@@ -49,14 +49,7 @@ public class BaseActivity extends FragmentActivity {
 
 
     protected MessageManager messageManager;
-    AnimationDrawable loadingAnimationDrawable;
-    AnimationDrawable dialogAnimationDrawable;
-    long totalTimeSeconds = 30;
-    long beginTime = -1;//记录验证码发送时间
-
-    private Handler shareHandler = new Handler();
-    private View loadingView;
-
+    protected EventManager eventManager;
 
     @Subscribe
     public void onEvent(String event) {
@@ -66,7 +59,7 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventManager.GetInstance().getEventBus().register(this);
+        eventManager = EventManager.GetInstance();
         messageManager = MessageManager.getInstance();
     }
 
@@ -96,7 +89,6 @@ public class BaseActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventManager.GetInstance().getEventBus().unregister(this);
     }
 
     @Override
@@ -193,6 +185,7 @@ public class BaseActivity extends FragmentActivity {
         imm.showSoftInput(findViewById(R.id.root), InputMethodManager.SHOW_FORCED);
         imm.hideSoftInputFromWindow(findViewById(R.id.root).getWindowToken(), 0); //强制隐藏键盘
     }
+
     public void showLoadingView() {
         View v = findViewById(R.id.loadingview);
         v.setVisibility(View.VISIBLE);

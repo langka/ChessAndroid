@@ -1,8 +1,12 @@
 package com.bupt.chess.conn;
 
+import android.content.Context;
+
+import com.bupt.chess.R;
 import com.bupt.chess.msg.Message;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -30,6 +34,15 @@ public class JsonConnection {
         }
     }
 
+    public static JsonConnection createDemoConn(Context context) throws IOException {
+        JsonConnection connection = new JsonConnection();
+        connection.writer = new FileWriter(new File("output"));
+        connection.reader = new InputStreamReader(context.getResources().openRawResource(R.raw.input));
+        connection.jsonReader = new JsonReader(connection.reader);
+        connection.jsonReader.setLenient(true);
+        return connection;
+    }
+
     private JsonConnection(Socket socket) throws IOException {
         this.socket = socket;
         writer = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
@@ -37,6 +50,13 @@ public class JsonConnection {
         jsonReader = new JsonReader(reader);
         jsonReader.setLenient(true);
     }
+
+    private JsonConnection() {
+
+        jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
+    }
+
 
     public JsonElement readJson() throws JsonIOException {
         for (; ; ) {
@@ -59,7 +79,10 @@ public class JsonConnection {
 
     public void close() {
         try {
-            socket.close();
+            reader.close();
+            writer.close();
+            if (socket != null)
+                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

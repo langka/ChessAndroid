@@ -13,7 +13,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        MessageManager.getInstance().init();
+        MessageManager.getInstance().init(this);
     }
 
 }
