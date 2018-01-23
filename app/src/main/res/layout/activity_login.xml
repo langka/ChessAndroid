@@ -6,9 +6,6 @@
     android:background="@color/W1"
     android:clipChildren="false">
 
-    <include
-        android:id="@+id/loadingview"
-        layout="@layout/layout_loading" />
 
     <RelativeLayout
         android:id="@+id/innerroot"
@@ -41,7 +38,7 @@
                 android:layout_marginTop="80dp"
                 android:hint="请输入账户名"
                 android:imeOptions="actionNext"
-                android:inputType="phone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/G1"
                 android:textColorHint="@color/G2"
@@ -203,4 +200,8 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <include
+        android:id="@+id/loadingview"
+        layout="@layout/layout_loading" />
 </RelativeLayout>

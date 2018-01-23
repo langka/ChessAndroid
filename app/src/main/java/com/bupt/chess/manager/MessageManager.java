@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bupt.chess.conn.JsonConnection;
@@ -35,6 +36,7 @@ import java.util.concurrent.locks.LockSupport;
 public class MessageManager {
 
 
+    public static final String TAG = "MESSAGEMANAGER";
     private static MessageManager manager = new MessageManager();
 
     public static MessageManager getInstance() {
@@ -79,6 +81,8 @@ public class MessageManager {
                         OnMessageResponse response = responsePool.get(type);
                         if (response != null) {
                             handler.post(() -> r.onResponse(m));
+                        }else{
+                            log("find a message without callback id: "+m.id+" type:"+type);
                         }
 
                     }
@@ -91,6 +95,7 @@ public class MessageManager {
     Runnable receiveWorker = () -> {
         while (!end) {
             Message message = connection.readMessage();
+            log("new message arrived");
             try {
                 queue.put(message);
             } catch (InterruptedException e) {
@@ -131,9 +136,11 @@ public class MessageManager {
                 int identity = id.getAndDecrement();
                 Message m = Message.createLoginMessage(new UserInfo(name, pwd));
                 m.id = identity;
+                m.key = uniqueKey;
                 responsePool.put(identity, response);
                 connection.writeJson(m.toString());
             } catch (IOException e) {
+                Log.d(TAG,"send login failed");
                 e.printStackTrace();
             }
         });
@@ -144,6 +151,7 @@ public class MessageManager {
             try {
                 int identity = id.incrementAndGet();
                 Message m = Message.createStaticsRequest(uniqueKey);
+                m.id = identity;
                 responsePool.put(identity, response);
                 connection.writeJson(m.toString());
             } catch (IOException e) {
@@ -153,10 +161,11 @@ public class MessageManager {
 
     }
 
-    public void joinRoom(String roomKey, OnMessageResponse<RoomResponse> r) {
+    public void createRoom(OnMessageResponse<RoomResponse> r){
         sendingService.submit(() -> {
             int identity = id.incrementAndGet();
-            Message m = Message.createJoinRoomRequest(roomKey, uniqueKey);
+            Message m = Message.createCreateRoomRequest( uniqueKey,"快来一起战斗吧",0,"");
+            m.id = identity;
             responsePool.put(identity, r);
             try {
                 connection.writeJson(m.toString());
@@ -166,6 +175,30 @@ public class MessageManager {
         });
     }
 
+    public void joinRoom(String roomKey, OnMessageResponse<RoomResponse> r) {
+        sendingService.submit(() -> {
+            int identity = id.incrementAndGet();
+            Message m = Message.createJoinRoomRequest(roomKey, uniqueKey);
+            m.id = identity;
+            responsePool.put(identity, r);
+            try {
+                connection.writeJson(m.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void leaveRoom(String roomKey) {
+        sendingService.submit(() -> {
+            Message m = Message.createLeaveRoomRequest(roomKey, uniqueKey);
+            try {
+                connection.writeJson(m.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     public void movePiece(String roomKey, int fx, int fy, int tx, int ty) {
         sendingService.submit(() -> {
@@ -187,16 +220,7 @@ public class MessageManager {
         });
     }
 
-    public void leaveRoom(String roomKey) {
-        sendingService.submit(() -> {
-            Message m = Message.createLeaveRoomRequest(roomKey, uniqueKey);
-            try {
-                connection.writeJson(m.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+
 
     public void startGame(String roomKey) {
         sendingService.submit(() -> {
@@ -217,9 +241,14 @@ public class MessageManager {
             if (!b) {
                 new Thread(() -> {
                     try {
-                        Socket s = new Socket("10.2.2.2", 9876);
+                        Socket s = new Socket("10.209.8.206", 9876);
                         handler.post(()->Toast.makeText(context,"connected to server",Toast.LENGTH_SHORT).show());
                         connection = JsonConnection.createConnection(s);
+                        Message msg=Message.createConnMessage();
+                        connection.writeJson(msg.toString());
+                        msg = connection.readMessage();
+                        uniqueKey = msg.key;
+                        log("unikey get: "+uniqueKey);
                         receiverThread.submit(receiveWorker);
                         callBackHandlerService.submit(messageHandler);
                         callBackHandlerService.submit(messageHandler);
@@ -256,6 +285,10 @@ public class MessageManager {
 
     public void unSubscribeTalkMessage(OnMessageResponse<NormalMessage> listener) {
         msgListeners.remove(listener);
+    }
+
+    private void log(String x){
+        Log.d(TAG,x);
     }
 
 

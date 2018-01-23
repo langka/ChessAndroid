@@ -11,9 +11,12 @@
     <color name="color_input_dialog_background">#b4ffffff</color>
 
     <color name="colorTransparentBlack">#44777777</color>
-
+    <color name="blue_a">#64b2f3</color>
+    <color name="blue_b">#06aeed</color>
+    <color name="blue_c">#12b7f5</color>
+    <color name="blue_d">#28ddfb</color>
     <color name="colorDanmuMsg">#30e7d5</color>
-
+    <color name="green_tr">#3330e7d5</color>
     <color name="background_gray1">#EBEBEB</color>
     <color name="black">#000000</color>
     <!--蒙版-->
@@ -84,8 +87,10 @@
     <color name="G8">#f7f7f7</color>
     <color name="G9">#DDDDDD</color>
 
-
+    <color name="gray_a">#f0f0f4</color>
+    <color name="gray_b">#e1e1e1</color>
     <color name="B1">#4880d4</color>
+    <color name="black_a">#bfbfbf</color>
 
     <color name="Y1">#f7c641</color>
 

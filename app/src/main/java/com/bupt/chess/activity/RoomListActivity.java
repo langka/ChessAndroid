@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by xusong on 2018/1/12.
  * About:
  */
-class RoomListActivity extends BaseActivity {
+public class RoomListActivity extends BaseActivity {
 
     public static void Start(Context context) {
         Intent intent = new Intent(context, RoomListActivity.class);
@@ -38,13 +38,17 @@ class RoomListActivity extends BaseActivity {
     ImageView portrait;
     TextView name;
     TextView win;
+    TextView lvText;
     TextView lost;
     View refresh;
+    View add;
 
     @BindView(R.id.roomlist)
     ListView roomListView;
-    @BindView(R.id.createroom)
-    TextView createTextView;
+    @BindView(R.id.previous)
+    View previous;
+    @BindView(R.id.next)
+    View next;
 
     RoomListAdapter roomAdapter;
     AccountResponse accountResponse;
@@ -56,29 +60,42 @@ class RoomListActivity extends BaseActivity {
         ButterKnife.bind(this);
         accountResponse = UserManager.getInstance().getUser();
         header = LayoutInflater.from(this).inflate(R.layout.header_roolist, null);
-        portrait = (ImageView) header.findViewById(R.id.head_icon);
+        portrait = (ImageView) header.findViewById(R.id.head_portrait);
         name = (TextView) header.findViewById(R.id.head_name);
         name.setText(accountResponse.name);
+        lvText = (TextView) header.findViewById(R.id.head_level);
+        lvText.setText("lv "+(accountResponse.win-accountResponse.lost));
         win = (TextView) header.findViewById(R.id.head_win);
-        win.setText(accountResponse.win+"");
+        win.setText(accountResponse.win + "");
         lost = (TextView) header.findViewById(R.id.head_lost);
-        lost.setText(accountResponse.lost+"");
-        refresh = header.findViewById(R.id.refresh);
+        lost.setText(accountResponse.lost + "");
+        refresh = header.findViewById(R.id.head_refresh);
+        add = header.findViewById(R.id.head_add);
         refresh.setOnClickListener(view -> getData());
         roomAdapter = new RoomListAdapter(new ArrayList<>(), this);
         roomListView.setAdapter(roomAdapter);
         roomListView.addHeaderView(header);
         roomListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            RoomData data = (RoomData) roomAdapter.getItem(i - 1);
-            messageManager.joinRoom(data.key, response -> {
-                if (response.data.success) {//成功
-                    RoomActivity.Start(RoomListActivity.this, response.data);
-                } else {
-                    showText("进入房间失败: " + response.data.info);
-                }
-            });
+            if (i!=0) {
+                RoomData data = (RoomData) roomAdapter.getItem(i - 1);
+                messageManager.joinRoom(data.key, response -> {
+                    if (response.data.success) {//成功
+                        RoomActivity.Start(RoomListActivity.this, response.data);
+                    } else {
+                        showText("进入房间失败: " + response.data.info);
+                    }
+                });
+            }
 
         });
+        add.setOnClickListener(view -> {
+            messageManager.createRoom(response -> {
+                showText("create room success");
+                RoomActivity.Start(RoomListActivity.this,response.data);
+            });
+        });
+        previous.setOnClickListener(view -> roomAdapter.previousPage());
+        next.setOnClickListener(view -> roomAdapter.nextPage());
         getData();
     }
 
@@ -87,6 +104,8 @@ class RoomListActivity extends BaseActivity {
         messageManager.sendRoomListMessage(response -> {
             hideLoadingView();
             roomAdapter.updateData(response.data.rooms);
+            if(response.data.rooms==null||response.data.rooms.size()==0)
+                showText("当前没有房间！");
         });
     }
 
@@ -94,6 +113,8 @@ class RoomListActivity extends BaseActivity {
 
         private List<RoomData> datas;
         private Context context;
+        private int pageCount = 5;
+        private int currentPage = 0;
 
         public void updateData(List<RoomData> datas) {
             if (datas != null)
@@ -109,12 +130,30 @@ class RoomListActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return datas.size();
+            int x = datas.size();
+            return x >= pageCount ? pageCount : x;
+        }
+
+
+        public void nextPage() {
+            int total = datas.size();
+            int all = total / (pageCount + 1) + 1;
+            if (currentPage < all) {
+                currentPage++;
+                notifyDataSetChanged();
+            }
+        }
+
+        public void previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                notifyDataSetChanged();
+            }
         }
 
         @Override
         public Object getItem(int i) {
-            return datas.get(i);
+            return datas.get(pageCount * currentPage + i);
         }
 
         @Override
@@ -133,7 +172,7 @@ class RoomListActivity extends BaseActivity {
             } else {
                 holder = (ViewHolder) view.getTag();
             }
-            RoomData current = datas.get(i);
+            RoomData current = datas.get(i + pageCount * currentPage);
             holder.roomName.setText(current.name);
             return view;
         }

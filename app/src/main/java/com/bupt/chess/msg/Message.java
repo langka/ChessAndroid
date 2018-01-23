@@ -5,11 +5,15 @@ import com.bupt.chess.msg.data.ConnRequest;
 import com.bupt.chess.msg.data.GameRequest;
 import com.bupt.chess.msg.data.LogInRequest;
 import com.bupt.chess.msg.data.LogOutRequest;
+import com.bupt.chess.msg.data.MoveRequest;
+import com.bupt.chess.msg.data.NormalMessage;
 import com.bupt.chess.msg.data.RegisterRequest;
 import com.bupt.chess.msg.data.RoomRequest;
 import com.bupt.chess.msg.data.StaticsRequest;
 import com.bupt.chess.msg.data.TurnChangeMsg;
 import com.bupt.chess.msg.data.response.AccountResponse;
+import com.bupt.chess.msg.data.response.GameResponse;
+import com.bupt.chess.msg.data.response.MoveResponse;
 import com.bupt.chess.msg.data.response.RoomResponse;
 import com.bupt.chess.msg.data.response.StaticsResponse;
 import com.google.gson.Gson;
@@ -77,7 +81,12 @@ public class Message<T> {
         classMaps.put(103, AccountResponse.class);
 
         classMaps.put(300, RoomResponse.class);
+        classMaps.put(301, NormalMessage.class);
 
+        classMaps.put(400,GameRequest.class);
+        classMaps.put(401, GameResponse.class);
+        classMaps.put(402, MoveRequest.class);
+        classMaps.put(403, MoveResponse.class);
         classMaps.put(404,TurnChangeMsg.class);
 
     }

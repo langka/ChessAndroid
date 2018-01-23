@@ -31,10 +31,11 @@
         <activity
             android:name=".activity.RoomListActivity"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".activity.RoomActivity"/>
+        <activity android:name=".activity.GameActivity"/>
         <meta-data
             android:name="IS_DEBUG"
-            android:value="true" />
+            android:value="false" />
     </application>
 
 </manifest>

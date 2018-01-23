@@ -7,4 +7,15 @@ package com.bupt.chess.msg.data;
  * 普通聊天消息
  */
 public class NormalMessage {
+    public String from;
+    public String content;
+
+    public NormalMessage(){
+
+    }
+
+    public NormalMessage(String from, String content) {
+        this.from = from;
+        this.content = content;
+    }
 }

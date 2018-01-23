@@ -52,9 +52,6 @@ public class JsonConnection {
     }
 
     private JsonConnection() {
-
-        jsonReader = new JsonReader(reader);
-        jsonReader.setLenient(true);
     }
 
 

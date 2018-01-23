@@ -89,7 +89,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0 && pwdEditText.getText().length() > 0) {
-                    submitTextView.setTextColor(getResources().getColor(R.color.W1));
+                    submitTextView.setTextColor(getResources().getColor(R.color.B1));
                 } else {
                     submitTextView.setTextColor(getResources().getColor(R.color.TRANS_W1));
                 }
