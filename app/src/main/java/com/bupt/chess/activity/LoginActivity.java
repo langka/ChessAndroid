@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bupt.chess.R;
+import com.bupt.chess.manager.UserManager;
 import com.bupt.chess.msg.data.response.AccountResponse;
 
 import butterknife.BindView;
@@ -28,8 +29,6 @@ import butterknife.ButterKnife;
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-
     // 三方账号没有绑定手机号的code
     private static final int ERROR_TOKEN_CODE = 100119;
 
@@ -53,17 +52,8 @@ public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.login_register)
     TextView registerTextView;//注册文字
-
-
-    @BindView(R.id.login_weibo_imageview)
-    ImageView weiboLoginImageView;
-
-    @BindView(R.id.login_weixin_imageview)
-    ImageView wechatLoginImageView;
-
-
-    @BindView(R.id.login_qq_imageview)
-    ImageView qqLoginImageView;
+    @BindView(R.id.login_other_container)
+    View otherWay;
 
     Handler handler = new Handler();
 
@@ -130,16 +120,13 @@ public class LoginActivity extends BaseActivity {
 
             }
         });
-        ;
-        pwdEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    login();
-                    return true;
-                }
-                return false;
+        otherWay.setOnClickListener(view -> showText("其它登录方式暂不支持！"));
+        pwdEditText.setOnKeyListener((view, keyCode, keyEvent) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                login();
+                return true;
             }
+            return false;
         });
 
         registerTextView.setOnClickListener(new View.OnClickListener() {//跳转至注册
@@ -154,31 +141,19 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        wechatLoginImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        qqLoginImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        weiboLoginImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
     }
 
     private void login() {
+        showLoadingView();
         String account = accountEditText.getText().toString().trim();
         String pwd = pwdEditText.getText().toString().trim();
         messageManager.sendLoginMessage(account,pwd,(resp)->{
+            hideLoadingView();
             if(!resp.data.success){
                 showText("登陆失败:"+resp.data.info);
             }else {
-              // RoomListActivity.Start(LoginActivity.this);
+                UserManager.getInstance().setUser(resp.data);
+              RoomListActivity.Start(LoginActivity.this);
             }
         });
 

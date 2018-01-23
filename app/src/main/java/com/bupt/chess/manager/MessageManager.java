@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by xusong on 2018/1/10.
@@ -54,7 +55,7 @@ public class MessageManager {
     private JsonConnection connection;
     private LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
     private ConcurrentHashMap<Integer, OnMessageResponse> responsePool = new ConcurrentHashMap<>();
-    private ExecutorService sendingService = Executors.newFixedThreadPool(5);
+    private ExecutorService sendingService = Executors.newFixedThreadPool(2);
     private ExecutorService receiverThread = Executors.newSingleThreadExecutor();
     private ExecutorService callBackHandlerService = Executors.newFixedThreadPool(2);
     Runnable messageHandler = () -> {
@@ -217,6 +218,7 @@ public class MessageManager {
                 new Thread(() -> {
                     try {
                         Socket s = new Socket("10.2.2.2", 9876);
+                        handler.post(()->Toast.makeText(context,"connected to server",Toast.LENGTH_SHORT).show());
                         connection = JsonConnection.createConnection(s);
                         receiverThread.submit(receiveWorker);
                         callBackHandlerService.submit(messageHandler);

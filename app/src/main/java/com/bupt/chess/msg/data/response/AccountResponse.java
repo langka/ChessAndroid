@@ -9,4 +9,7 @@ package com.bupt.chess.msg.data.response;
 public class AccountResponse {
     public boolean success;
     public String info;
+    public String name;
+    public int win;
+    public int lost;
 }
